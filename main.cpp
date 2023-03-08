@@ -108,7 +108,6 @@ vector<Vector2f> init_bounding_box(string path) {
             bb_pointer.loadFromImage(obj, area);
             Image color_getter = bb_pointer.copyToImage();
             auto color = color_getter.getPixel(0, 0);
-            //cout << (int)color.r << " " << (int) color.g << " " << (int)color.b << endl;
             if (color.r < 255 || color.g < 255 || color.b < 255) {
                 Vector2f temp(i + 800, j + 628);
                 rslt.push_back(temp);
@@ -155,6 +154,7 @@ Vector2f kunkun_bouncing(CircleShape& current_ball, Vector2f basketball_pos, vec
     float dist = basketball_radius + bounding_box_radius;
     for (auto i : bounding_box) {
         if (distance_of_two_points(basketball_pos, i) <= (dist + 0.f)) {
+            //linear algebra content：
             float a1 = center_x, b1 = center_y;
             float a0 = i.x + (a1 - i.x) * (bounding_box_radius / (bounding_box_radius + basketball_radius)),
                     b0 = i.y + (b1 - i.y) * (bounding_box_radius / (bounding_box_radius + basketball_radius));
@@ -241,15 +241,6 @@ int main() {
 
     vector<CardObj> all_bricks = init_bricks();
 
-//    RectangleShape test_shape;
-//    Texture test_tex;
-//    test_tex.loadFromFile("../Assets/bricks.png");
-//    int x = test_tex.getSize().x;
-//    int y = test_tex.getSize().y;
-//    Vector2f size(x,y);
-//    test_shape.setSize(size);
-//    test_shape.setPosition(0,0);
-//    test_shape.setTexture(&test_tex);
 
     RectangleShape hp_bkg, hp_bar;
     float bar_height = 100;
@@ -397,6 +388,8 @@ int main() {
     int change_frame2 = 0;
 
     Clock clock;
+
+    //main game loop:
     while (window.isOpen()) {
         float elapsed = clock.restart().asMilliseconds();
         bool check = false;
@@ -529,45 +522,33 @@ int main() {
                     //the last int param indicates if there's a non-tangent collision, which intersecting point to be returned(1 or 2?).
                     //collision with left side:
                     if (circle_line_collision2(top_left, bottom_left, center) <= basketball_radius) {
-                        //i->setScale(1.3f, 1.3f);
                         i = all_bricks.erase(i);
-                        //cout << "delta x: " << basketball_deltax << endl;
                         basketball_deltax *= -1;
                         bounce_sound.play();
-                        //cout << "delta x after altering: " << basketball_deltax << endl;
                         break;
                     }
 
                     //collision with top side:
                     if (circle_line_collision2(top_left, top_right, center) <= basketball_radius) {
-                        //i->setScale(1.3f, 1.3f);
                         i = all_bricks.erase(i);
-                        //cout << "delta y: " << basketball_deltay << endl;
                         basketball_deltay *= -1;
                         bounce_sound.play();
-                        //cout << "delta y after altering: " << basketball_deltay << endl;
                         break;
                     }
 
                     //collision with right side:
                     if (circle_line_collision2(bottom_right, top_right, center) <= basketball_radius) {
-                        //i->setScale(1.3f, 1.3f);
                         i = all_bricks.erase(i);
-                        //cout << "delta x: " << basketball_deltax << endl;
                         basketball_deltax *= -1;
                         bounce_sound.play();
-                        //cout << "delta x after altering: " << basketball_deltax << endl;
                         break;
                     }
 
                     //collision with bottom side:
                     if (circle_line_collision2(bottom_left, bottom_right, center) <= basketball_radius) {
-                        //i->setScale(1.3f, 1.3f);
                         i = all_bricks.erase(i);
-                        //cout << "delta y: " << basketball_deltay << endl;
                         basketball_deltay *= -1;
                         bounce_sound.play();
-                        //cout << "delta y after altering: " << basketball_deltay << endl;
                         break;
                     }
 
@@ -624,17 +605,8 @@ int main() {
                 window.draw(hp_bar);
                 window.draw(kunkun);
 
-//                for (auto i : current_bb_drawable) {
-//                    window.draw(i);
-//                }
-
-                //cout << "current speed on x: " << basketball_deltax << " current speed on y: " << basketball_deltay << endl;
-
                 window.draw(basketball);
 
-//                window.draw(mouse_text);
-//                cout << "drawing location: " << endl;
-//                cout << basketball.getPosition().x << " " << basketball.getPosition().y << endl;
                 window.display();
             }
             else {
@@ -646,10 +618,6 @@ int main() {
                 window.draw(hp_bar);
                 window.draw(kunkun);
                 window.draw(basketball);
-//                window.draw(location_text);
-//                window.draw(mouse_text);
-//                cout << "drawing location: " << endl;
-//                cout << basketball.getPosition().x << " " << basketball.getPosition().y << endl;
                 window.display();
 
             }
